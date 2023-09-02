@@ -27,7 +27,7 @@ templates = Jinja2Templates(directory=templates_path)
 
 
 def install_projects() -> None:
-    project_list = os.listdir('projects')
+    project_list = os.listdir(projects_path)
 
     for project in project_list:
         module = importlib.import_module(f'projects.{project}.main')
