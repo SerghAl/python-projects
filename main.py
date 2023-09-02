@@ -71,7 +71,7 @@ async def upload_project(upload_file: UploadFile) -> JSONResponse:
 def read_main(request: Request):
 
     project_descs = []
-    project_list = os.listdir('projects')
+    project_list = os.listdir(projects_path)
 
     for project in project_list:
         des_file_path = os.path.join(
