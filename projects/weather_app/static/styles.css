@@ -1,0 +1,36 @@
+@keyframes fly {
+    from {
+        transform: translateY(7px);
+    }
+
+    to {
+        transform: translateY(-7px);
+    }
+}
+
+body {
+    font-family: 'Neucha', cursive;
+    background: linear-gradient(
+        to top left,
+        var(--bs-purple),
+        var(--bs-orange)
+    );
+    width: 100vw;
+    height: 100vh;
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    width: 80px;
+    height: auto;
+    margin-right: 10px;
+
+    animation-timing-function: cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    animation-duration: 3s;
+    animation-name: fly;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
