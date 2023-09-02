@@ -36,7 +36,7 @@ def install_projects() -> None:
 
         if (os.path.isfile(req_file_path)):
             os.system(
-                f'cat {req_file_path} | xargs poetry add')
+                f'cat {req_file_path} | xargs poetry -C {app_dir} add')
 
         if hasattr(module, 'subapp'):
             app.mount(f"/{project}", module.subapp)
