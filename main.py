@@ -12,10 +12,18 @@ from fastapi.responses import JSONResponse
 
 from pywebio.platform.fastapi import webio_routes
 
-app = FastAPI()
-app.mount("/static", StaticFiles(directory="./static"), name="static")
+app_dir = os.path.dirname(
+    os.path.abspath(__file__))
 
-templates = Jinja2Templates(directory="./templates")
+templates_path = os.path.join(app_dir, 'templates')
+static_path = os.path.join(app_dir, 'static')
+projects_path = os.path.join(app_dir, 'projects')
+tmp_path = os.path.join(app_dir, 'tmp')
+
+app = FastAPI()
+app.mount("/static", StaticFiles(directory=static_path), name="static")
+
+templates = Jinja2Templates(directory=templates_path)
 
 
 def install_projects() -> None:
@@ -23,10 +31,12 @@ def install_projects() -> None:
 
     for project in project_list:
         module = importlib.import_module(f'projects.{project}.main')
+        req_file_path = os.path.join(
+            projects_path, f'{project}/requirements.txt')
 
-        if (os.path.isfile(f'./projects/{project}/requirements.txt')):
+        if (os.path.isfile(req_file_path)):
             os.system(
-                f'cat ./projects/{project}/requirements.txt | xargs poetry add')
+                f'cat {req_file_path} | xargs poetry add')
 
         if hasattr(module, 'subapp'):
             app.mount(f"/{project}", module.subapp)
@@ -39,14 +49,16 @@ install_projects()
 
 @app.post("/projects")
 async def upload_project(upload_file: UploadFile) -> JSONResponse:
+    upload_file_path = os.path.join(tmp_path, upload_file.filename)
+
     try:
-        with open(f'./tmp/{upload_file.filename}', 'wb') as binary_file:
+        with open(upload_file_path, 'wb') as binary_file:
             binary_file.write(upload_file.file.read())
 
-        with zipfile.ZipFile(f'./tmp/{upload_file.filename}', 'r') as zip_file:
-            zip_file.extractall('./projects/')
+        with zipfile.ZipFile(upload_file_path, 'r') as zip_file:
+            zip_file.extractall(projects_path)
 
-        os.remove(f'./tmp/{upload_file.filename}')
+        os.remove(upload_file_path)
 
         install_projects()
 
@@ -62,7 +74,10 @@ def read_main(request: Request):
     project_list = os.listdir('projects')
 
     for project in project_list:
-        with open(f'projects/{project}/desc.md', 'r', encoding='utf-8') as f:
+        des_file_path = os.path.join(
+            projects_path, f'{project}/desc.md')
+
+        with open(des_file_path, 'r', encoding='utf-8') as f:
             desc = markdown.markdown(f.read())
             project_descs.append({
                 'name': project,

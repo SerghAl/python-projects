@@ -5,15 +5,15 @@ from fastapi.templating import Jinja2Templates
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 
-root_dir = os.path.dirname(
+app_dir = os.path.dirname(
     os.path.abspath(__file__))
 
-templates_path = os.path.join(root_dir, 'templates')
+templates_path = os.path.join(app_dir, 'templates')
 
 templates = Jinja2Templates(directory=templates_path)
 
-static_path = os.path.join(root_dir, 'static')
-static_name = os.path.basename(root_dir)
+static_path = os.path.join(app_dir, 'static')
+static_name = os.path.basename(app_dir)
 
 subapp = FastAPI()
 subapp.mount("/static", StaticFiles(directory=static_path),
