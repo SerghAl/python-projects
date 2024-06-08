@@ -3,6 +3,8 @@ import zipfile
 import importlib
 import markdown
 import uvicorn
+import asyncio
+import nest_asyncio
 
 from fastapi import FastAPI, Request, UploadFile
 
@@ -11,6 +13,8 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
 
 from pywebio.platform.fastapi import webio_routes
+
+nest_asyncio.apply()
 
 app_dir = os.path.dirname(
     os.path.abspath(__file__))
@@ -26,7 +30,7 @@ app.mount("/static", StaticFiles(directory=static_path), name="static")
 templates = Jinja2Templates(directory=templates_path)
 
 
-def install_projects() -> None:
+async def install_projects() -> None:
     project_list = os.listdir(projects_path)
 
     for project in project_list:
@@ -37,20 +41,20 @@ def install_projects() -> None:
         if (os.path.isfile(req_file_path)):
             os.system(
                 f'cat {req_file_path} | xargs poetry -C {app_dir} add')
-
-        if hasattr(module, 'subapp'):
+        print('INSTALL ', project)
+        if project.endswith('bot'):
+            task = asyncio.create_task(module.main())
+            # await task
+        elif hasattr(module, 'subapp'):
             app.mount(f"/{project}", module.subapp)
         else:
             app.mount(f"/{project}", FastAPI(routes=webio_routes(module.main)))
 
 
-install_projects()
-
-
 @app.post("/projects")
 async def upload_project(upload_file: UploadFile) -> JSONResponse:
     upload_file_path = os.path.join(tmp_path, upload_file.filename)
-
+    print(upload_file_path)
     try:
         with open(upload_file_path, 'wb') as binary_file:
             binary_file.write(upload_file.file.read())
@@ -87,5 +91,12 @@ def read_main(request: Request):
     return templates.TemplateResponse("home.html", {"request": request, "projects": project_descs})
 
 
+async def main():
+    asyncio.create_task(install_projects())
+
+    config = uvicorn.Config(app)
+    server = uvicorn.Server(config)
+    await server.serve()
+
 if __name__ == '__main__':
-    uvicorn.run(app='main:app')
+    asyncio.run(main())

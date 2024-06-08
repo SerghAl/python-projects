@@ -1,0 +1,5 @@
+[Service]
+ExecStart=poetry run python /home/sergh/python-projects/bots/tg_calculation_bot/main.py
+
+[Install]
+WantedBy=multi-user.target
