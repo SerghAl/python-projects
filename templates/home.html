@@ -1,82 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Проекты ИФКиС</title>
-    <link rel="stylesheet" href="{{url_for('static', path='/styles.css')}}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-</head>
-<body class="container pt-3">
-    <section class="accordion mb-3" id="projects">
-        <h3>Проекты</h3>
-        {% for project in projects %}
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Проекты ИФКиС</title>
+        <link
+            rel="stylesheet"
+            href="{{url_for('static', path='/styles.css')}}"
+        />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+            crossorigin="anonymous"
+        />
+    </head>
+    <body class="container pt-3">
+        <section class="accordion mb-3" id="projects">
+            <h3>Проекты</h3>
+            {% for project in projects %}
             <article class="accordion-item">
                 <header class="accordion-header">
-                    <button class="accordion-button {%if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#{{project.name}}" aria-expanded="{%if loop.first %}true{%else%}false{% endif %}" aria-controls="collapseOne">
+                    <button
+                        class="accordion-button {%if not loop.first %}collapsed{% endif %}"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#{{project.name}}"
+                        aria-expanded="{%if loop.first %}true{%else%}false{% endif %}"
+                        aria-controls="collapseOne"
+                    >
                         {{project.name}}
                     </button>
                 </header>
-                <div id="{{project.name}}" class="accordion-collapse collapse {%if loop.first %}show{% endif %}" data-bs-parent="#projects">
+                <div
+                    id="{{project.name}}"
+                    class="accordion-collapse collapse {%if loop.first %}show{% endif %}"
+                    data-bs-parent="#projects"
+                >
                     <div class="accordion-body">
                         {{project.desc|safe}}
-                        <a type="button" class="btn btn-primary" href="/{{project.name}}">Посмотреть проект</a>
+                        <a
+                            type="button"
+                            class="btn btn-primary"
+                            href="/{{project.name}}"
+                            >Посмотреть проект</a
+                        >
                     </div>
                 </div>
             </article>
-        {% endfor %}
-    </section>
-    <section class="mb-3">
-        <h3>Загрузите свой проект</h3>
-        <div class="p-3 border rounded">
-            <p>Проект должен удовлетворять следующим условиям:</p>
-            <ul>
-                <li>Запакован в .zip архив</li>
-                <li>Папка с проектом должна быть названа именем проекта. Пробелы должны быть заменены на нижний знак подчеркивания <code>_</code>, например <code>weather_app</code></li>
-                <li>Описание проекта должно находиться в markdown разметке в файле с названием <code>desc.md</code></li>
-                <li>Зависимости проекта должны находиться в файле <code>requirements.txt</code></li>
-                <li>Проект должен запускаться из файла <code>main.py</code></li>
-            </ul>
-            <p>Условия для проектов PyWebIO:</p>
-            <ul>
-                <li>Приложение должно запускаться из функции <code>main</code></li>
-                <li>Если ваше приложения является FastAPI приложением, то вы дложны создать экземпляр класса FastAPI с названием <code>subapp</code>, т.е. <code>subapp = FastAPI()</code></li>
-            </ul>
-            <p>Условия для проектов FastAPI:</p>
-            <ul>
-                <li>В файле <code>main</code> вы дложны создать экземпляр класса FastAPI с названием <code>subapp</code>, т.е. <code>subapp = FastAPI()</code></li>
-                <li>
-                    При использовании шаблонизатора и статических файлов рекомендуется начать <code>main.py</code> со следующего кода:
-                    {% include 'code_snippet.html' %}
-                </li>
-            </ul>
-            <form action="/projects" id="upload_form" method="POST" enctype="multipart/form-data">
-                <input class="form-control mb-1" type="file" name="upload_file">
-                <input class="btn btn-primary" type="submit" value="Отправить">
-            </form>
-        </div>
-    </section>
-    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
-        <div id="success_toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-            <span class="d-inline-block mr-1">✅</span>
-            <strong class="me-auto">Установка проекта</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            {% endfor %}
+        </section>
+        <section class="mb-3">
+            <h3>Загрузите свой проект</h3>
+            <div class="p-3 border rounded">
+                <p>Проект должен удовлетворять следующим условиям:</p>
+                <ul>
+                    <li>Запакован в .zip архив</li>
+                    <li>
+                        Папка с проектом должна быть названа именем проекта.
+                        Пробелы должны быть заменены на нижний знак
+                        подчеркивания <code>_</code>, например
+                        <code>weather_app</code>
+                    </li>
+                    <li>
+                        Описание проекта должно находиться в markdown разметке в
+                        файле с названием <code>desc.md</code>
+                    </li>
+                    <li>
+                        Зависимости проекта должны находиться в файле
+                        <code>requirements.txt</code>
+                    </li>
+                    <li>
+                        Проект должен запускаться из файла <code>main.py</code>
+                    </li>
+                </ul>
+                <p>Условия для проектов PyWebIO:</p>
+                <ul>
+                    <li>
+                        Приложение должно запускаться из функции
+                        <code>main</code>
+                    </li>
+                    <li>
+                        Если ваше приложения является FastAPI приложением, то вы
+                        дложны создать экземпляр класса FastAPI с названием
+                        <code>subapp</code>, т.е.
+                        <code>subapp = FastAPI()</code>
+                    </li>
+                </ul>
+                <p>Условия для проектов FastAPI:</p>
+                <ul>
+                    <li>
+                        В файле <code>main</code> вы дложны создать экземпляр
+                        класса FastAPI с названием <code>subapp</code>, т.е.
+                        <code>subapp = FastAPI()</code>
+                    </li>
+                    <li>
+                        При использовании шаблонизатора и статических файлов
+                        рекомендуется начать <code>main.py</code> со следующего
+                        кода: {% include 'code_snippet.html' %}
+                    </li>
+                </ul>
+                {#
+                <form
+                    action="/projects"
+                    id="upload_form"
+                    method="POST"
+                    enctype="multipart/form-data"
+                >
+                    <input
+                        class="form-control mb-1"
+                        type="file"
+                        name="upload_file"
+                    />
+                    <input
+                        class="btn btn-primary"
+                        type="submit"
+                        value="Отправить"
+                    />
+                </form>
+                #}
             </div>
-            <div class="toast-body"></div>
-        </div>
-    </div>
-    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
-        <div id="failure_toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-            <span class="d-inline-block mr-1">❌</span>
-            <strong class="me-auto">Установка проекта</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </section>
+        {#
+        <div
+            class="toast-container position-fixed top-0 start-50 translate-middle-x p-3"
+        >
+            <div
+                id="success_toast"
+                class="toast"
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+            >
+                <div class="toast-header">
+                    <span class="d-inline-block mr-1">✅</span>
+                    <strong class="me-auto">Установка проекта</strong>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="toast"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="toast-body"></div>
             </div>
-            <div class="toast-body"></div>
         </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-    <script src="{{url_for('static', path='/main.js')}}"></script>
-</body>
+        <div
+            class="toast-container position-fixed top-0 start-50 translate-middle-x p-3"
+        >
+            <div
+                id="failure_toast"
+                class="toast"
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+            >
+                <div class="toast-header">
+                    <span class="d-inline-block mr-1">❌</span>
+                    <strong class="me-auto">Установка проекта</strong>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="toast"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="toast-body"></div>
+            </div>
+        </div>
+        #}
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+            crossorigin="anonymous"
+        ></script>
+        {#
+        <script src="{{url_for('static', path='/main.js')}}"></script>
+        #}
+    </body>
 </html>

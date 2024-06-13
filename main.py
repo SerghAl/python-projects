@@ -45,24 +45,24 @@ async def install_projects() -> None:
             app.mount(f"/{project}", FastAPI(routes=webio_routes(module.main)))
 
 
-@app.post("/projects")
-async def upload_project(upload_file: UploadFile) -> JSONResponse:
-    upload_file_path = os.path.join(tmp_path, upload_file.filename)
+# @app.post("/projects")
+# async def upload_project(upload_file: UploadFile) -> JSONResponse:
+#     upload_file_path = os.path.join(tmp_path, upload_file.filename)
 
-    try:
-        with open(upload_file_path, 'wb') as binary_file:
-            binary_file.write(upload_file.file.read())
+#     try:
+#         with open(upload_file_path, 'wb') as binary_file:
+#             binary_file.write(upload_file.file.read())
 
-        with zipfile.ZipFile(upload_file_path, 'r') as zip_file:
-            zip_file.extractall(projects_path)
+#         with zipfile.ZipFile(upload_file_path, 'r') as zip_file:
+#             zip_file.extractall(projects_path)
 
-        os.remove(upload_file_path)
+#         os.remove(upload_file_path)
 
-        install_projects()
+#         install_projects()
 
-        return JSONResponse(status_code=200, content={"status": 200, "msg": "Проект успешно установлен. Обновите страницу, чтобы увидеть свой проект в спике"})
-    except:
-        return JSONResponse(status_code=500, content={"status": 500, "msg": "Во время установки проекта произошла ошибка"})
+#         return JSONResponse(status_code=200, content={"status": 200, "msg": "Проект успешно установлен. Обновите страницу, чтобы увидеть свой проект в спике"})
+#     except:
+#         return JSONResponse(status_code=500, content={"status": 500, "msg": "Во время установки проекта произошла ошибка"})
 
 
 @app.get("/")
