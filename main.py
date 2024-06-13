@@ -14,8 +14,6 @@ from fastapi.responses import JSONResponse
 
 from pywebio.platform.fastapi import webio_routes
 
-nest_asyncio.apply()
-
 app_dir = os.path.dirname(
     os.path.abspath(__file__))
 
@@ -41,11 +39,8 @@ async def install_projects() -> None:
         if (os.path.isfile(req_file_path)):
             os.system(
                 f'cat {req_file_path} | xargs poetry -C {app_dir} add')
-        print('INSTALL ', project)
-        if project.endswith('bot'):
-            task = asyncio.create_task(module.main())
-            # await task
-        elif hasattr(module, 'subapp'):
+
+        if hasattr(module, 'subapp'):
             app.mount(f"/{project}", module.subapp)
         else:
             app.mount(f"/{project}", FastAPI(routes=webio_routes(module.main)))
@@ -54,7 +49,7 @@ async def install_projects() -> None:
 @app.post("/projects")
 async def upload_project(upload_file: UploadFile) -> JSONResponse:
     upload_file_path = os.path.join(tmp_path, upload_file.filename)
-    print(upload_file_path)
+
     try:
         with open(upload_file_path, 'wb') as binary_file:
             binary_file.write(upload_file.file.read())

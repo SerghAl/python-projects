@@ -83,16 +83,14 @@ async def download_file(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 
-async def main():
-    print('RUN TG_CALCULATION_BOT')
+def main():
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                         level=logging.INFO)
 
     app = ApplicationBuilder().token(TG_TOKEN).build()
 
     app.add_handler(MessageHandler(filters.Document.ALL, download_file))
-
-    await app.run_polling()
+    app.run_polling()
 
 
 if __name__ == '__main__':
